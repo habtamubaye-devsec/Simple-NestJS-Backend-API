@@ -66,7 +66,7 @@ export class AppController {
       updated_at: new Date(),
     };
     data.report[updatedReportIndex] = updatedReport;
-    return 'Updated';
+    return { message: 'Updated', report: updatedReport };
   }
 
   @Delete(':id')
