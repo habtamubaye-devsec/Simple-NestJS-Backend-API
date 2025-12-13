@@ -17,7 +17,7 @@ interface Data {
 export const data = {
   report: [
     {
-      id: 'uuid1',
+      id: '494de28c-02e5-4005-b693-df004768456c',
       source: 'Salary',
       amount: 7809,
       created_at: new Date(),
@@ -33,7 +33,7 @@ export const data = {
       type: ReportType.INCOME,
     },
     {
-      id: 'uuid3',
+      id: 'd5d261ce-f9ef-4ad2-989d-152ab7bcea12',
       source: 'Food',
       amount: 6588,
       created_at: new Date(),
