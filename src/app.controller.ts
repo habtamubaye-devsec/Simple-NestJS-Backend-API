@@ -7,6 +7,8 @@ import {
   Param,
   Body,
   HttpCode,
+  ParseUUIDPipe,
+  ParseEnumPipe
 } from '@nestjs/common';
 import { AppService } from './app.service';
 import { data, ReportType } from './data';
@@ -16,14 +18,14 @@ export class AppController {
   constructor(private readonly appService: AppService) {}
 
   @Get()
-  getAllReport(@Param('type') type: string) {
+  getAllReport(@Param('type', new ParseEnumPipe(ReportType)) type: string) {
     const reportType =
       type === 'income' ? ReportType.INCOME : ReportType.EXPENSE;
     return this.appService.getAllReport(reportType);
   }
 
   @Get(':id')
-  getAllReportById(@Param('type') type: string, @Param('id') id: string) {
+  getAllReportById(@Param('type', new ParseEnumPipe(ReportType)) type: string, @Param('id', ParseUUIDPipe) id: string) {
     const reportType =
       type === 'income' ? ReportType.INCOME : ReportType.EXPENSE;
     return this.appService.getReportById(reportType, id);
@@ -32,7 +34,7 @@ export class AppController {
   @Post()
   createReports(
     @Body() body: { amount: number; source: string },
-    @Param('type') type: string,
+    @Param('type', new ParseEnumPipe(ReportType)) type: string,
   ) {
     const reportType =
       type === 'income' ? ReportType.INCOME : ReportType.EXPENSE;
@@ -43,8 +45,8 @@ export class AppController {
   @Put(':id')
   updateReports(
     @Body() body: { amount: number; source: string },
-    @Param('type') type: string,
-    @Param('id') id: string,
+    @Param('type', new ParseEnumPipe(ReportType)) type: string,
+    @Param('id', ParseUUIDPipe) id: string,
   ) {
     const reportType =
       type === 'income' ? ReportType.INCOME : ReportType.EXPENSE;
@@ -53,7 +55,7 @@ export class AppController {
 
   @HttpCode(204)
   @Delete(':id')
-  deleteReports(@Param('type') type: string, @Param('id') id: string) {
+  deleteReports(@Param('type', new ParseEnumPipe(ReportType)) type: string, @Param('id',ParseUUIDPipe) id: string) {
     const reportType =
       type === 'income' ? ReportType.INCOME : ReportType.EXPENSE;
    return this.appService.deleteReport(reportType, id);
