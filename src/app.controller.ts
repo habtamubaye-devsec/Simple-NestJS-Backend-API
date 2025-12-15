@@ -12,6 +12,7 @@ import {
 } from '@nestjs/common';
 import { AppService } from './app.service';
 import { data, ReportType } from './data';
+import { CreateReportDto, UpdateReportDto } from './dtos/report.dtos';
 
 @Controller('report/:type')
 export class AppController {
@@ -33,24 +34,24 @@ export class AppController {
 
   @Post()
   createReports(
-    @Body() body: { amount: number; source: string },
+    @Body() body: CreateReportDto,
     @Param('type', new ParseEnumPipe(ReportType)) type: string,
   ) {
     const reportType =
       type === 'income' ? ReportType.INCOME : ReportType.EXPENSE;
     
-    return this.appService.createReport(reportType, body.source, body.amount);
+    return this.appService.createReport(reportType, body);
   }
 
   @Put(':id')
   updateReports(
-    @Body() body: { amount: number; source: string },
+    @Body() body:UpdateReportDto,
     @Param('type', new ParseEnumPipe(ReportType)) type: string,
     @Param('id', ParseUUIDPipe) id: string,
   ) {
     const reportType =
       type === 'income' ? ReportType.INCOME : ReportType.EXPENSE;
-    return this.appService.updateReport(reportType, id, body.source, body.amount);
+    return this.appService.updateReport(reportType, id, body);
   }
 
   @HttpCode(204)
