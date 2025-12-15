@@ -1,54 +1,63 @@
 import { Injectable } from '@nestjs/common';
 import { ReportType, data } from './data';
 import { v4 as uuid } from 'uuid';
+import { ReportResponseDto } from './dtos/report.dtos';
 
-interface data {
+interface Report {
   amount: number;
   source: string;
 }
 
+interface UpdateReport {
+  amount?: number;
+  source?: string;
+}
+
 @Injectable()
 export class AppService {
-  getAllReport(type: ReportType) {
-    console.log(type);
-    return data.report.filter((report) => report.type === type);
+  getAllReport(type: ReportType): ReportResponseDto[] {
+    const reports = data.report.filter((report) => report.type === type);
+    return reports.map(report => new ReportResponseDto(report));
   }
 
-  getReportById(type: ReportType, id: string) {
-    return data.report
+  getReportById(type: ReportType, id: string): ReportResponseDto | null {
+    const report = data.report
       .filter((report) => report.type === type)
       .find((report) => report.id === id);
+
+    if (!report) return null;
+    return new ReportResponseDto(report);
   }
-   
-  createReport(type: ReportType, source: string, amount: number) {
+
+  createReport(type: ReportType, body: Report): ReportResponseDto {
     const newReport = {
       id: uuid(),
-      source,
-      amount,
+      ...body,
       created_at: new Date(),
       updated_at: new Date(),
       type,
     };
     data.report.push(newReport);
-    return newReport;
+    return new ReportResponseDto(newReport);
   }
 
-  updateReport(type: ReportType, id: string, source: string, amount: number) {
+  updateReport(type: ReportType, id: string, body: UpdateReport): ReportResponseDto | null {
     const updatedReportIndex = data.report.findIndex(
       (report) => report.id === id && report.type === type,
     );
+
+    console.log(body);
     if (updatedReportIndex === -1) {
-      return 'Report not found';
+      return null;
     }
     const existingReport = data.report[updatedReportIndex];
     const updatedReport = {
       ...existingReport,
-      source,
-      amount,
+      ...body,
       updated_at: new Date(),
     };
     data.report[updatedReportIndex] = updatedReport;
-    return { message: 'Updated', report: updatedReport };
+    return new ReportResponseDto(updatedReport);
   }
 
   deleteReport(type: ReportType, id: string) {
